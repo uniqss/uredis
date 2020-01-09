@@ -1,5 +1,5 @@
 # uredis
 uniqs redis wrapper of hiredis.
-sync/async apis.
+async only.
 with db splitter(by some id mod some defined value).
 
