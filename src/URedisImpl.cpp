@@ -81,6 +81,7 @@ void redis_implcb(redisAsyncContext *c, void *r, void *privdata)
 	{
 		(p->cbfn)(p->id, p->opid, reply, p->privdata);
 	}
+	delete p;
 }
 
 void connectCallback(const redisAsyncContext *c, int status) {

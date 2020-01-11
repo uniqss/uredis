@@ -1,0 +1,9 @@
+1. git clone
+2. cd uredis
+3. mkdir build && cd $_
+4. cmake ../
+5. make
+6. [sudo] make install
+7. cd ../examples
+8. sh b.sh
+9. ./a.out
