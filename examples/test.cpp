@@ -14,12 +14,14 @@ class User
 			:
 				uid(u),
 				currmsgid(mid),
-				somedata(sd)
+				somedata(sd),
+				somehash(0)
 	{
 	}
 		int64_t uid;
 		int64_t currmsgid;
 		int64_t somedata;
+		int64_t somehash;
 };
 
 void test_cb(int64_t id, int64_t opid, redisReply* rpl, void* privdata)
@@ -36,6 +38,14 @@ void test_cb(int64_t id, int64_t opid, redisReply* rpl, void* privdata)
 	cout << "u:" << u.uid << "," << u.currmsgid << "," << u.somedata << endl;
 }
 
+enum EUserOperation
+{
+	EUserOperation_setcache,
+	EUserOperation_getcache,
+
+	EUserOperation_hsetcache,
+	EUserOperation_hgetcache
+};
 
 int main()
 {
@@ -53,12 +63,20 @@ int main()
 
 	User u(123, 1001, 666);
 
+	int result = 0;
+	// set get test
 	std::string strUserCache = "usercache_" + std::to_string(u.uid);
-	int result = r.cmd(u.uid, u.currmsgid, nullptr, nullptr, "SET %s %d", strUserCache.c_str(), u.somedata);
-
+	result = r.cmd(u.uid, EUserOperation_setcache, nullptr, nullptr, "SET %s %d", strUserCache.c_str(), u.somedata);
 	cout << "result:" << result << endl;
 	
-	result = r.cmd(u.uid, u.currmsgid, test_cb, &u, "GET %s", strUserCache.c_str());
+	result = r.cmd(u.uid, EUserOperation_getcache, test_cb, &u, "GET %s", strUserCache.c_str());
+
+	// hset hget test
+	std::string strKey = "usercache";
+	std::string strField = std::to_string(u.uid);
+	u.somehash = 123456789;
+	result = r.cmd(u.uid, EUserOperation_hsetcache, nullptr, nullptr, "HSET %s %s %d", strKey.c_str(), strField.c_str(), u.somehash);
+	result = r.cmd(u.uid, EUserOperation_hgetcache, test_cb, &u, "HGET %s %s", strKey.c_str(), strField.c_str());
 
 	uv_run(loop, UV_RUN_DEFAULT);
 
