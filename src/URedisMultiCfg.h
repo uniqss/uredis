@@ -6,8 +6,8 @@ class URedisMultiCfg
 {
 	public:
 		URedisMultiCfg() :
-			nStart(0),
-			nStop(0),
+			start(0),
+			stop(0),
 			port(0)
 		{
 		}
@@ -18,16 +18,16 @@ class URedisMultiCfg
 
 		void Reset()
 		{
-			nStart = 0;
-			nStop = 0;
-			strIp.clear();
-			nPort = 0;
+			start = 0;
+			stop = 0;
+			ip.clear();
+			port = 0;
 		}
 
 	public:
-		int nStart;
-		int nStop;
-		std::string strIp;
-		int nPort;
+		int start;
+		int stop;
+		std::string ip;
+		int port;
 };
 
