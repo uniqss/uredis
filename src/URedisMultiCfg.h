@@ -5,6 +5,7 @@
 class URedisMultiCfg
 {
 	public:
+		// [start, stop)
 		URedisMultiCfg() :
 			start(0),
 			stop(0),
@@ -12,6 +13,7 @@ class URedisMultiCfg
 		{
 		}
 
+		// [start, stop)
 		URedisMultiCfg(int _start, int _stop, const std::string& _ip, int _port)
 		{
 			start = _start;
@@ -33,6 +35,7 @@ class URedisMultiCfg
 		}
 
 	public:
+		// [start, stop)
 		int start;
 		int stop;
 		std::string ip;
