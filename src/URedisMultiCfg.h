@@ -12,6 +12,14 @@ class URedisMultiCfg
 		{
 		}
 
+		URedisMultiCfg(int _start, int _stop, const std::string& _ip, int _port)
+		{
+			start = _start;
+			stop = _stop;
+			ip = _ip;
+			port = _port;
+		}
+
 		~URedisMultiCfg()
 		{
 		}

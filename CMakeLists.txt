@@ -19,8 +19,8 @@ ADD_LIBRARY(uredis STATIC ${src_cpp} ${src_h})
 ADD_DEFINITIONS( "-Wall -g -std=c++17 " )
 
 INSTALL(TARGETS uredis
-	ARCHIVE DESTINATION /usr/local/uniqs/uredis/lib)
+	ARCHIVE DESTINATION /usr/local/lib64)
 
 
-INSTALL(FILES ${src_h} DESTINATION /usr/local/uniqs/uredis/include)
+INSTALL(FILES ${src_h} DESTINATION /usr/local/include/uredis)
 

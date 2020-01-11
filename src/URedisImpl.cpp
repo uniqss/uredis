@@ -18,6 +18,8 @@ URedisImpl::URedisImpl(uv_loop_t* loop, EConnMod connMod, EConnMod dbMod, const 
 		throw new std::logic_error("loop is null");
 	}
 	this->loop = loop;
+	cmod = connMod;
+	dmod = dbMod;
 
 	/*
 		int mod = (int)connMod * (int)dbMod;
@@ -62,6 +64,22 @@ void redis_implcb(redisAsyncContext *c, void *r, void *privdata)
 	if (reply == nullptr)
 	{
 		cout << __FUNCTION__ << "error occurred, reply == nullptr";
+		return;
+	}
+	if (privdata == nullptr)
+	{
+		cout << __FUNCTION__ << "privdata is null" << endl;
+		return;
+	}
+	PrivDataWrapper* p = (PrivDataWrapper*)privdata;
+	if (p == nullptr)
+	{
+		cout << __FUNCTION__ << "PrivDataWrapper null";
+		return;
+	}
+	if (p->cbfn != nullptr)
+	{
+		(p->cbfn)(p->id, p->opid, reply, p->privdata);
 	}
 }
 
