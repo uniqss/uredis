@@ -198,7 +198,7 @@ int main()
 	const char* hgsks = "hgetset_key_str";
 	const char* hgsfs = "hgetset_field_str";
 	result = r.cmd(u.uid, EUO_hsetlld, nullptr, nullptr, "HSET %s %s %lld", hgsk, hgsf, u.hgetset_lld); PR;
-	result = r.cmd(u.uid, EUO_hgetlld, test_cb, &u, "HGET %s, %s", hgsk, hgsf); PR;
+	result = r.cmd(u.uid, EUO_hgetlld, test_cb, &u, "HGET %s %s", hgsk, hgsf); PR;
 	result = r.cmd(u.uid, EUO_hsetstr, nullptr, nullptr, "HSET %s %s %s", hgsks, hgsfs, u.hgetset_str.c_str()); PR;
 	result = r.cmd(u.uid, EUO_hgetstr, test_cb, &u, "HGET %s %s", hgsks, hgsfs); PR;
 	result = r.cmd(u.uid, EUO_hgetlld, test_cb, nullptr, "HGET %s %s", key_ne, field_ne); PR;
