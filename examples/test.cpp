@@ -42,6 +42,10 @@ class User
 		std::string hmgetset_str1;
 		std::string hmgetset_str2;
 		std::string hmgetset_str3;
+
+		std::string r1;	long long s1;
+		std::string r2;	long long s2;
+		std::string r3;	long long s3;
 };
 
 enum EUserOperation
@@ -64,6 +68,8 @@ enum EUserOperation
 	EUO_hmsetstr,
 	EUO_hmgetstr,
 
+	EUO_zrange,
+	EUO_zrangescore,
 };
 void test_cb(int64_t id, int64_t opid, redisReply* rpl, void* privdata)
 {
@@ -84,6 +90,12 @@ cout << __FUNCTION__ << opid << " ok:" << ok << endl;\
 #define PEQARR(v1, v2, v3, arr) if(privdata) cout << __FUNCTION__ << U.v1 << " vs " << arr[0] << "|" \
 << U.v2 << " vs " << arr[1] << "|" \
 << U.v3 << " vs " << arr[2] << " ?equal:" << ((U.v1 == arr[0] && U.v2 == arr[1] && U.v3 == arr[2]) ? "true":"false") << endl;
+#define PEQARR1(v1, v2, v3, arr) if(privdata) cout << __FUNCTION__ << U.v1 << " vs " << arr[0].first << "|" \
+<< U.v2 << " vs " << arr[1].first << "|" \
+<< U.v3 << " vs " << arr[2].first << " ?equal:" << ((U.v1 == arr[0].first && U.v2 == arr[1].first && U.v3 == arr[2].first) ? "true":"false") << endl;
+#define PEQARR2(v1, v2, v3, arr) if(privdata) cout << __FUNCTION__ << U.v1 << " vs " << arr[0].second<< "|" \
+<< U.v2 << " vs " << arr[1].second<< "|" \
+<< U.v3 << " vs " << arr[2].second<< " ?equal:" << ((U.v1 == arr[0].second&& U.v2 == arr[1].second&& U.v3 == arr[2].second) ? "true":"false") << endl;
 
 	bool ok = false;
 	std::string s1, s2, s3;
@@ -132,6 +144,19 @@ cout << __FUNCTION__ << opid << " ok:" << ok << endl;\
 		ok = trim_hmget(rpl, vs);
 		POK;
 		PEQARR(hmgetset_str1, hmgetset_str2, hmgetset_str3, vs);
+	}
+	if (opid == EUO_zrange) {
+		std::vector<std::string> vs;
+		ok = trim_zrange(rpl, vs);
+		POK;
+		PEQARR(r1, r2, r3, vs);
+	}
+	if (opid == EUO_zrangescore) {
+		std::vector<std::pair<std::string, long long> > vs;
+		ok = trim_zrangescore(rpl, vs);
+		POK;
+		PEQARR1(r1, r2, r3, vs);
+		PEQARR2(s1, s2, s3, vs);
 	}
 
 }
@@ -220,6 +245,13 @@ int main()
 	result = r.cmd(u.uid, EUO_hmgetstr, test_cb, &u, "HMGET %s %s %s %s", hmgsks, hmgsf1s, hmgsf2s, hmgsf3s);PR;
 	result = r.cmd(u.uid, EUO_hmgetstr, test_cb, nullptr, "HMGET %s %s %s %s", key_ne, field_ne1, field_ne2, field_ne3);PR;
 
+	// zrange zrangewithscore
+	u.r1 = "r1";u.r2 = "r2";u.r3 = "r3";
+	u.s1 = 7654321; u.s2 =  87654321; u.s3 = 987654321;
+	const char* zkey = "zkey";
+	result = r.cmd(u.uid, 0, nullptr, nullptr, "zadd %s %lld %s %lld %s %lld %s", zkey, u.s1, u.r1.c_str(), u.s2, u.r2.c_str(), u.s3, u.r3.c_str());PR;
+	result = r.cmd(u.uid, EUO_zrange, test_cb, &u, "zrange %s 0 -1", zkey);PR;
+	result = r.cmd(u.uid, EUO_zrangescore, test_cb, &u, "zrange %s 0 -1 withscores", zkey);PR;
 
 	uv_run(loop, UV_RUN_DEFAULT);
 

@@ -129,7 +129,7 @@ bool trim_zrangescore(redisReply* r, std::vector<std::pair<std::string, long lon
 		for(std::size_t i = 0;i < r->elements / 2;++i)
 		{
 			//vals[i] = std::make_pair(r->element[i / 2]->str, r->element[i / 2 + 1]->integer);
-			vals[i] = std::make_pair(r->element[i / 2]->str, atoll(r->element[i / 2 + 1]->str));
+			vals[i] = std::make_pair(r->element[i * 2]->str, atoll(r->element[i * 2 + 1]->str));
 		}
 		return true;
 	}
