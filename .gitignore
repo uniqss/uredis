@@ -1,4 +1,6 @@
 include/hiredis
+include/uv
+include/uv.h
 
 # Prerequisites
 *.d
