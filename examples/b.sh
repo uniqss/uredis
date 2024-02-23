@@ -1,1 +1,1 @@
-g++ -g -I/usr/local/include/hiredis -I/usr/local/include/uredis ./test.cpp -luv -lhiredis -luredis
+g++ -g -Wall $1.cpp -o $1 -I../include -I../include/hiredis -L../lib/ -lhiredis -Wl,-rpath,../lib
