@@ -6,14 +6,20 @@
 #include <cstddef>
 #include <stdlib.h>
 
-bool trim_get(redisReply* r, std::string& val) {
+enum EConnMod { EConnMod_1 = 1, EConnMod_10 = 10, EConnMod_100 = 100, EConnMod_1000 = 1000 };
+
+// userid, operationtypeid, redisReply, privdata      privdata's memory must be managed by user.
+typedef void(redisCbFn)(int64_t, int64_t, redisReply*, void*);
+
+
+inline bool trim_get(redisReply* r, std::string& val) {
     if (r && r->type == REDIS_REPLY_STRING) {
         val = r->str;
         return true;
     }
     return false;
 }
-bool trim_get(redisReply* r, long long& val) {
+inline bool trim_get(redisReply* r, long long& val) {
     if (r && r->type == REDIS_REPLY_STRING) {
         val = atoll(r->str);
         return true;
@@ -25,7 +31,7 @@ bool trim_get(redisReply* r, long long& val) {
     return false;
 }
 
-bool trim_mget(redisReply* r, std::vector<std::string>& vals) {
+inline bool trim_mget(redisReply* r, std::vector<std::string>& vals) {
     if (r && r->type == REDIS_REPLY_ARRAY) {
         vals.resize(r->elements);
         for (std::size_t i = 0; i < r->elements; ++i) {
@@ -35,7 +41,7 @@ bool trim_mget(redisReply* r, std::vector<std::string>& vals) {
     }
     return false;
 }
-bool trim_mget(redisReply* r, std::vector<long long>& vals) {
+inline bool trim_mget(redisReply* r, std::vector<long long>& vals) {
     if (r && r->type == REDIS_REPLY_ARRAY) {
         vals.resize(r->elements);
         for (std::size_t i = 0; i < r->elements; ++i) {
@@ -46,14 +52,14 @@ bool trim_mget(redisReply* r, std::vector<long long>& vals) {
     return false;
 }
 
-bool trim_hget(redisReply* r, std::string& val) {
+inline bool trim_hget(redisReply* r, std::string& val) {
     if (r && r->type == REDIS_REPLY_STRING) {
         val = r->str;
         return true;
     }
     return false;
 }
-bool trim_hget(redisReply* r, long long& val) {
+inline bool trim_hget(redisReply* r, long long& val) {
     if (r && r->type == REDIS_REPLY_STRING) {
         val = atoll(r->str);
         return true;
@@ -65,7 +71,7 @@ bool trim_hget(redisReply* r, long long& val) {
     return false;
 }
 
-bool trim_hmget(redisReply* r, std::vector<std::string>& vals) {
+inline bool trim_hmget(redisReply* r, std::vector<std::string>& vals) {
     if (r && r->type == REDIS_REPLY_ARRAY) {
         vals.resize(r->elements);
         for (std::size_t i = 0; i < r->elements; ++i) {
@@ -75,7 +81,7 @@ bool trim_hmget(redisReply* r, std::vector<std::string>& vals) {
     }
     return false;
 }
-bool trim_hmget(redisReply* r, std::vector<long long>& vals) {
+inline bool trim_hmget(redisReply* r, std::vector<long long>& vals) {
     if (r && r->type == REDIS_REPLY_ARRAY) {
         vals.resize(r->elements);
         for (std::size_t i = 0; i < r->elements; ++i) {
@@ -85,7 +91,7 @@ bool trim_hmget(redisReply* r, std::vector<long long>& vals) {
     }
     return false;
 }
-bool trim_zrange(redisReply* r, std::vector<std::string>& vals) {
+inline bool trim_zrange(redisReply* r, std::vector<std::string>& vals) {
     if (r && r->type == REDIS_REPLY_ARRAY) {
         vals.resize(r->elements);
         for (std::size_t i = 0; i < r->elements; ++i) {
@@ -96,7 +102,7 @@ bool trim_zrange(redisReply* r, std::vector<std::string>& vals) {
     return false;
 }
 
-bool trim_zrangescore(redisReply* r, std::vector<std::pair<std::string, long long> >& vals) {
+inline bool trim_zrangescore(redisReply* r, std::vector<std::pair<std::string, long long> >& vals) {
     if (r && r->type == REDIS_REPLY_ARRAY) {
         vals.resize(r->elements / 2);
         for (std::size_t i = 0; i < r->elements / 2; ++i) {

@@ -4,11 +4,8 @@
 #include "URedisMultiCfg.h"
 #include "uv.h"
 #include "hiredis.h"
-
-enum EConnMod { EConnMod_1 = 1, EConnMod_10 = 10, EConnMod_100 = 100, EConnMod_1000 = 1000 };
-
-// userid, operationtypeid, redisReply, privdata      privdata's memory must be managed by user.
-typedef void(redisCbFn)(int64_t, int64_t, redisReply*, void*);
+#include "uredis_helper.h"
+#include "URedisImpl.h"
 
 class URedisImpl;
 class URedis {

@@ -6,8 +6,9 @@
 #include <async.h>
 #include <adapters/libuv.h>
 #include "URedisMultiCfg.h"
-#include "uredis.h"
+#include "uredis_helper.h"
 
+#include <iostream>
 
 struct ConnCfg {
     redisAsyncContext* c = nullptr;
@@ -31,16 +32,16 @@ class PrivDataWrapper {
 inline void redis_implcb(redisAsyncContext* c, void* r, void* privdata) {
     redisReply* reply = (redisReply*)r;
     if (reply == nullptr) {
-        cout << __FUNCTION__ << "error occurred, reply == nullptr";
+        std::cout << __FUNCTION__ << "error occurred, reply == nullptr";
         return;
     }
     if (privdata == nullptr) {
-        cout << __FUNCTION__ << "privdata is null" << endl;
+        std::cout << __FUNCTION__ << "privdata is null" << std::endl;
         return;
     }
     PrivDataWrapper* p = (PrivDataWrapper*)privdata;
     if (p == nullptr) {
-        cout << __FUNCTION__ << "PrivDataWrapper null";
+        std::cout << __FUNCTION__ << "PrivDataWrapper null";
         return;
     }
     if (p->cbfn != nullptr) {
@@ -51,10 +52,10 @@ inline void redis_implcb(redisAsyncContext* c, void* r, void* privdata) {
 
 inline void connectCallback(const redisAsyncContext* c, int status) {
     if (status != REDIS_OK) {
-        cout << __FUNCTION__ << "Error: " << c->errstr << endl;
+        std::cout << __FUNCTION__ << "Error: " << c->errstr << std::endl;
         return;
     }
-    // cout << "Connected..." << endl;
+    // std::cout << "Connected..." << std::endl;
 }
 
 inline void disconnectCallback(const redisAsyncContext* c, int status) {

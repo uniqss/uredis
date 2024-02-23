@@ -6,8 +6,6 @@
 #include "uredis_helper.h"
 
 #include <iostream>
-using std::cout;
-using std::endl;
 
 class User {
    public:
@@ -68,45 +66,45 @@ enum EUserOperation {
     EUO_zrangescore,
 };
 void test_cb(int64_t id, int64_t opid, redisReply* rpl, void* privdata) {
-    cout << __FUNCTION__ << " id:" << id << " opid:" << opid << endl;
+    std::cout << __FUNCTION__ << " id:" << id << " opid:" << opid << std::endl;
     if (!rpl) {
-        cout << __FUNCTION__ << "error occurred" << endl;
+        std::cout << __FUNCTION__ << "error occurred" << std::endl;
         return;
     }
     if (privdata == nullptr) {
-        cout << __FUNCTION__ << " privdata is null, ok" << endl;
+        std::cout << __FUNCTION__ << " privdata is null, ok" << std::endl;
         return;
     }
 
 #define U (*(User*)(privdata))
 #define POK                                                                \
     do {                                                                   \
-        if (ok != 1) cout << __FUNCTION__ << opid << " ok:" << ok << endl; \
+        if (ok != 1) std::cout << __FUNCTION__ << opid << " ok:" << ok << std::endl; \
     } while (false);
 #define PEQ(lhs, rhs)                                  \
     if (privdata)                                      \
-        cout << __FUNCTION__ << lhs << " vs " << U.rhs \
-             << " ?equal:" << ((lhs == U.rhs) ? "true" : "false") << endl;
+        std::cout << __FUNCTION__ << lhs << " vs " << U.rhs \
+             << " ?equal:" << ((lhs == U.rhs) ? "true" : "false") << std::endl;
 #define PEQARR(v1, v2, v3, arr)                                                                    \
     if (privdata)                                                                                  \
-        cout << __FUNCTION__ << U.v1 << " vs " << arr[0] << "|" << U.v2 << " vs " << arr[1] << "|" \
+        std::cout << __FUNCTION__ << U.v1 << " vs " << arr[0] << "|" << U.v2 << " vs " << arr[1] << "|" \
              << U.v3 << " vs " << arr[2] << " ?equal:"                                             \
-             << ((U.v1 == arr[0] && U.v2 == arr[1] && U.v3 == arr[2]) ? "true" : "false") << endl;
+             << ((U.v1 == arr[0] && U.v2 == arr[1] && U.v3 == arr[2]) ? "true" : "false") << std::endl;
 #define PEQARR1(v1, v2, v3, arr)                                                                   \
     if (privdata)                                                                                  \
-        cout << __FUNCTION__ << U.v1 << " vs " << arr[0].first << "|" << U.v2 << " vs "            \
+        std::cout << __FUNCTION__ << U.v1 << " vs " << arr[0].first << "|" << U.v2 << " vs "            \
              << arr[1].first << "|" << U.v3 << " vs " << arr[2].first << " ?equal:"                \
              << ((U.v1 == arr[0].first && U.v2 == arr[1].first && U.v3 == arr[2].first) ? "true"   \
                                                                                         : "false") \
-             << endl;
+             << std::endl;
 #define PEQARR2(v1, v2, v3, arr)                                                           \
     if (privdata)                                                                          \
-        cout << __FUNCTION__ << U.v1 << " vs " << arr[0].second << "|" << U.v2 << " vs "   \
+        std::cout << __FUNCTION__ << U.v1 << " vs " << arr[0].second << "|" << U.v2 << " vs "   \
              << arr[1].second << "|" << U.v3 << " vs " << arr[2].second << " ?equal:"      \
              << ((U.v1 == arr[0].second && U.v2 == arr[1].second && U.v3 == arr[2].second) \
                      ? "true"                                                              \
                      : "false")                                                            \
-             << endl;
+             << std::endl;
 
     bool ok = false;
     std::string s1, s2, s3;
@@ -187,7 +185,7 @@ int main() {
 
     User u(123, 1001);
 
-#define PR cout << __FUNCTION__ << __LINE__ << " result:" << result << endl;
+#define PR std::cout << __FUNCTION__ << __LINE__ << " result:" << result << std::endl;
 
     int result = 0;
 
